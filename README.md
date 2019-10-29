@@ -5,6 +5,7 @@ Factory Pattern for Entity Framework Core. It helps you use this for multiple EF
 You can create readonly context and read-write with transaction
 
 # How to get it
+You can get it from NuGet - just install the [EFDbFactory.Sql](https://www.nuget.org/packages/EFDbFactory.Sql/)
 
 # How to use it
 Dependency Injection
