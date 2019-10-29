@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace UN.DbFactory.Sql
+namespace EFDbFactory.Sql
 {
     public class CommonDbContext : DbContext
     {

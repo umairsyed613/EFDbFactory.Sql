@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
-using UN.DbFactory.Sql.Interfaces;
 
-namespace UN.DbFactory.Sql.Implementations
+namespace EFDbFactory.Sql
 {
     public class DbFactory<T> : IDbFactory<T> where T : CommonDbContext
     {

@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFDbFactory.Sql", "EFDbFactory.Sql\EFDbFactory.Sql.csproj", "{591F9147-045F-4AD3-BF62-B580A5189091}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1E8C2BAA-7BD1-4A99-BCBE-DECC874E4D63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFDbFactory.Sql.Tests", "EFDbFactory.Sql.Tests\EFDbFactory.Sql.Tests.csproj", "{CA8054FE-882A-42DE-A7D1-F225B6A75B22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +19,16 @@ Global
 		{591F9147-045F-4AD3-BF62-B580A5189091}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{591F9147-045F-4AD3-BF62-B580A5189091}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{591F9147-045F-4AD3-BF62-B580A5189091}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA8054FE-882A-42DE-A7D1-F225B6A75B22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA8054FE-882A-42DE-A7D1-F225B6A75B22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA8054FE-882A-42DE-A7D1-F225B6A75B22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA8054FE-882A-42DE-A7D1-F225B6A75B22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CA8054FE-882A-42DE-A7D1-F225B6A75B22} = {1E8C2BAA-7BD1-4A99-BCBE-DECC874E4D63}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {51A9391F-E324-48AE-AC9F-6EB51986B32F}

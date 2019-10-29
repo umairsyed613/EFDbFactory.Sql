@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace UN.DbFactory.Sql.Interfaces
+﻿namespace EFDbFactory.Sql
 {
     public interface IDbFactory<out T> where T : CommonDbContext
     {

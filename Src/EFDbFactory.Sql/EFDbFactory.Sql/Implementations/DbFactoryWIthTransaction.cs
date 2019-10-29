@@ -1,8 +1,7 @@
 ﻿using System;
 using Microsoft.Data.SqlClient;
-using UN.DbFactory.Sql.Interfaces;
 
-namespace UN.DbFactory.Sql.Implementations
+namespace EFDbFactory.Sql
 {
     public class DbFactoryWIthTransaction : IDbFactoryWIthTransaction
     {

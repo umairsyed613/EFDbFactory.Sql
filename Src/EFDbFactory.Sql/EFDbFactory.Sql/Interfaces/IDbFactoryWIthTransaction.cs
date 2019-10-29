@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Data.SqlClient;
 
-namespace UN.DbFactory.Sql.Interfaces
+namespace EFDbFactory.Sql
 {
     public interface IDbFactoryWIthTransaction : IDisposable
     {

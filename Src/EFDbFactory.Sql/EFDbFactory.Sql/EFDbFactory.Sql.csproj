@@ -2,6 +2,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <Authors>UmairSyed</Authors>
+    <Description>Entity Framework Factory Pattern, Transaction with creating factory for read write and no tranaction and no tracking when readonly factory.</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
