@@ -2,9 +2,13 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <Authors>UmairSyed</Authors>
+    <Authors>UmairSyed (@umairsyed613)</Authors>
     <Description>Entity Framework Factory Pattern, Transaction with creating factory for read write and no tranaction and no tracking when readonly factory.</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/umairsyed613/EFDbFactory.Sql</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/umairsyed613/EFDbFactory.Sql</RepositoryUrl>
+    <PackageTags>Entity Framework, EntityFramework core, Factory Pattern</PackageTags>
+    <PackageLicenseFile>License.txt</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,5 +23,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\License.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 </Project>
