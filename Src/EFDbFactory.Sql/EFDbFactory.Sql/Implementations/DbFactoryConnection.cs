@@ -3,9 +3,9 @@ using Microsoft.Data.SqlClient;
 
 namespace EFDbFactory.Sql
 {
-    public class DbFactoryWIthTransaction : IDbFactoryWIthTransaction
+    public class DbFactoryConnection : IDbFactoryConnection
     {
-        public DbFactoryWIthTransaction(SqlConnection connection, SqlTransaction transaction)
+        public DbFactoryConnection(SqlConnection connection, SqlTransaction transaction)
         {
             Connection = connection ?? throw new ArgumentNullException(nameof(connection));
             Transaction = transaction ?? throw new ArgumentNullException(nameof(transaction));

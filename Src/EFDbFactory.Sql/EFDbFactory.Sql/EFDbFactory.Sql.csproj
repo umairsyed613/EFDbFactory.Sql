@@ -9,6 +9,7 @@
     <RepositoryUrl>https://github.com/umairsyed613/EFDbFactory.Sql</RepositoryUrl>
     <PackageTags>Entity Framework, EntityFramework core, Factory Pattern</PackageTags>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
