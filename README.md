@@ -1,4 +1,4 @@
-# Entity Framework Core Factory Pattern
+# Entity Framework Core Factory Pattern for Sql Server
 
 # Introduction 
 Factory Pattern for Entity Framework Core. It helps you use this for multiple EF DbContext with this pattern.
