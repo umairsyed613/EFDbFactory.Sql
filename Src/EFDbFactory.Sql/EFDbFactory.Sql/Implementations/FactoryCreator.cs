@@ -25,8 +25,7 @@ namespace EFDbFactory.Sql
         {
             var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync();
-            var transaction = connection.BeginTransaction(IsolationLevel.Unspecified);
-            return new DbFactoryConnection(connection, transaction);
+            return new DbFactoryConnection(connection, null);
         }
     }
 }

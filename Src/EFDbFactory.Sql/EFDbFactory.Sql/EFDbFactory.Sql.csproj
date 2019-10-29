@@ -3,13 +3,13 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Authors>UmairSyed (@umairsyed613)</Authors>
-    <Description>Entity Framework Factory Pattern, Transaction with creating factory for read write and no tranaction and no tracking when readonly factory.</Description>
+    <Description>Entity Framework Core Factory Pattern, DbContext with desired Db Transaction level when reading writing. and no transaction when readonly context. on any error the transaction will automatically rollback until you commit it</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/umairsyed613/EFDbFactory.Sql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/umairsyed613/EFDbFactory.Sql</RepositoryUrl>
     <PackageTags>Entity Framework, EntityFramework core, Factory Pattern</PackageTags>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>

@@ -8,7 +8,7 @@ namespace EFDbFactory.Sql
         public DbFactoryConnection(SqlConnection connection, SqlTransaction transaction)
         {
             Connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            Transaction = transaction ?? throw new ArgumentNullException(nameof(transaction));
+            Transaction = transaction;
         }
 
         public IDbFactory<T> FactoryFor<T>() where T : CommonDbContext => new DbFactory<T>(Connection, Transaction);
@@ -23,7 +23,7 @@ namespace EFDbFactory.Sql
 
         public void Dispose()
         {
-            Transaction.Dispose();
+            Transaction?.Dispose();
             Connection.Dispose();
         }
     }
