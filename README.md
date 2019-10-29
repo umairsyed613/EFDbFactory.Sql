@@ -42,4 +42,11 @@ public async Task AddBooks([FromBody] string name)
 ```
 
 # Build and Test
-Build Project and Run tests. 
+Build Project and Run tests.
+
+# Sample Projects
+```
+You can find sample projects under Src/Samples
+```
+
+# Feel Free to make it better
