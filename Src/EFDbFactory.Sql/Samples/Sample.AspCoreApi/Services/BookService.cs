@@ -21,7 +21,7 @@ namespace AspCoreApi.Services
 
         public async Task<IEnumerable<Book>> GetAllBooks()
         {
-            using var factory = await _factoryCreator.CreateFactoryWithNoTransaction();
+            using var factory = await _factoryCreator.Create();
             var context = factory.FactoryFor<BooksDbContext>().GetReadOnlyWithNoTracking();
             return context.Book.ToList();
         }

@@ -18,7 +18,7 @@ namespace AspCoreApi.Services
 
         public async Task CreateQuiz(string name)
         {
-            using var factory = await _factoryCreator.CreateFactoryWithTransaction(IsolationLevel.ReadCommitted);
+            using var factory = await _factoryCreator.Create(IsolationLevel.ReadCommitted);
             var context = factory.FactoryFor<QuizDbContext>().GetReadWriteWithDbTransaction();
             var q = new Quiz { Title = name };
             context.Quiz.Add(q);
@@ -34,8 +34,7 @@ namespace AspCoreApi.Services
 
         public async Task<IEnumerable<Quiz>> GetAllQuiz()
         {
-            Console.WriteLine(_factoryCreator.GetConnectionString());
-            using var factory = await _factoryCreator.CreateFactoryWithNoTransaction();
+            using var factory = await _factoryCreator.Create();
             var context = factory.FactoryFor<QuizDbContext>().GetReadOnlyWithNoTracking();
             return context.Quiz.ToList();
         }

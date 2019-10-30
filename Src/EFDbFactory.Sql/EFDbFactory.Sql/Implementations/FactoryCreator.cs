@@ -13,7 +13,13 @@ namespace EFDbFactory.Sql
             _connectionString = connectionString;
         }
 
-        public async Task<IDbFactoryConnection> CreateFactoryWithTransaction(IsolationLevel isolationLevel)
+        /// <summary>
+        /// create factory with desired transaction isolation level.
+        /// </summary>
+        /// <param name="isolationLevel"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public async Task<IDbFactoryConnection> Create(IsolationLevel isolationLevel)
         {
             var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync();
@@ -21,7 +27,11 @@ namespace EFDbFactory.Sql
             return new DbFactoryConnection(connection, transaction);
         }
 
-        public async Task<IDbFactoryConnection> CreateFactoryWithNoTransaction()
+        /// <summary>
+        /// create factory with no transaction
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IDbFactoryConnection> Create()
         {
             var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync();

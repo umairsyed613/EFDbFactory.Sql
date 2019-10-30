@@ -4,7 +4,7 @@ namespace EFDbFactory.Sql
 {
     public interface IFactoryCreator
     {
-        Task<IDbFactoryConnection> CreateFactoryWithTransaction(System.Data.IsolationLevel isolationLevel);
-        Task<IDbFactoryConnection> CreateFactoryWithNoTransaction();
+        Task<IDbFactoryConnection> Create(System.Data.IsolationLevel isolationLevel);
+        Task<IDbFactoryConnection> Create();
     }
 }
