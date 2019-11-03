@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using EFDbFactory.Sql;
@@ -17,7 +18,20 @@ namespace AspCoreApi.Services
 
         public async Task CreateAuthor(string name, string email) => throw new NotImplementedException();
 
-        public async Task CreateBook(int authorId, string title) => throw new NotImplementedException();
+        public async Task CreateBook(int authorId, string title)
+        {
+            using var factory = await _factoryCreator.Create(IsolationLevel.Snapshot);
+            var context = factory.FactoryFor<BooksDbContext>().GetReadWriteWithDbTransaction();
+
+            var book = new Book
+            {
+                Title = "New book",
+                AuthorId = authorId
+            };
+            context.Book.Add(book);
+            await context.SaveChangesAsync();
+            factory.CommitTransaction();
+        }
 
         public async Task<IEnumerable<Book>> GetAllBooks()
         {

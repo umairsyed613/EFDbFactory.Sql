@@ -35,21 +35,32 @@ public WriteController(IFactoryCreator factoryConn)
 {
   _factoryConn = factoryConn ?? throw new ArgumentNullException(nameof(factoryConn));
 }
+```
+ReadWrite Factory
+```
+public async Task CreateBook(int authorId, string title)
+        {
+            using var factory = await _factoryCreator.Create(IsolationLevel.Snapshot);
+            var context = factory.FactoryFor<BooksDbContext>().GetReadWriteWithDbTransaction();
 
-public async Task AddBooks([FromBody] string name)
-{
-  using (var factory = await _factoryConn.CreateFactoryWithTransaction(IsolationLevel.Snapshot))
-  {
-    using var dbcontext = factory.FactoryFor<MyDbContext>().GetReadWriteWithDbTransaction();
-          var book = new Book {
-                          Name = name
-                      };
-
-          dbContext.Books.Add(book);
-          await dbContext.SaveChanges();
-      factory.commitTransaction();
-  }
-}
+            var book = new Book
+            {
+                Title = "New book",
+                AuthorId = authorId
+            };
+            context.Book.Add(book);
+            await context.SaveChangesAsync();
+            factory.CommitTransaction();
+        }
+```
+Readonly factory 
+```
+public async Task<IEnumerable<Book>> GetAllBooks()
+        {
+            using var factory = await _factoryCreator.Create();
+            var context = factory.FactoryFor<BooksDbContext>().GetReadOnlyWithNoTracking();
+            return context.Book.ToList();
+        }
 ```
 
 # Build and Test
