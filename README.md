@@ -11,7 +11,16 @@ You can get it from NuGet - just install the [EFDbFactory.Sql](https://www.nuget
 
 # How to use it
 
-Inhert your dbcontext with commondbcontext 
+Inherit your dbcontext with commondbcontext 
+```
+public partial class YourDbContext : CommonDbContext
+    {
+        public YourDbContext(DbContextOptions<QuizDbContext> options)
+            : base(options)
+        {
+        }
+    }
+```
 
 Dependency Injection
 ```
