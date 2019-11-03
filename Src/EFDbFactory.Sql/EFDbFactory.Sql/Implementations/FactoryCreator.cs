@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 
@@ -19,23 +20,46 @@ namespace EFDbFactory.Sql
         /// <param name="isolationLevel"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async Task<IDbFactoryConnection> Create(IsolationLevel isolationLevel)
-        {
-            var connection = new SqlConnection(_connectionString);
-            await connection.OpenAsync();
-            var transaction = connection.BeginTransaction(isolationLevel);
-            return new DbFactoryConnection(connection, transaction);
-        }
+        public async Task<IFactoryCreator> Create(IsolationLevel isolationLevel) => await CreateReadWrite(isolationLevel);
 
         /// <summary>
         /// create factory with no transaction
         /// </summary>
         /// <returns></returns>
-        public async Task<IDbFactoryConnection> Create()
+        public async Task<IFactoryCreator> Create() => await CreateReadOnly();
+
+        public IDbFactory<T> FactoryFor<T>() where T : CommonDbContext => new DbFactory<T>(Connection, Transaction);
+
+        public void CommitTransaction()
         {
-            var connection = new SqlConnection(_connectionString);
-            await connection.OpenAsync();
-            return new DbFactoryConnection(connection, null);
+            if (Transaction == null) { throw new InvalidOperationException("Cannot commit null transaction"); }
+
+            Transaction.Commit();
+        }
+
+        public SqlConnection Connection { get; private set; }
+        public SqlTransaction Transaction { get; private set; }
+
+        private async Task<IFactoryCreator> CreateReadWrite(IsolationLevel isolationLevel)
+        {
+            Connection = new SqlConnection(_connectionString);
+            await Connection.OpenAsync();
+            Transaction = Connection.BeginTransaction(isolationLevel);
+            return this;
+        }
+
+        private async Task<IFactoryCreator> CreateReadOnly()
+        {
+            Connection = new SqlConnection(_connectionString);
+            await Connection.OpenAsync();
+            Transaction = null;
+            return this;
+        }
+
+        public void Dispose()
+        {
+            Connection?.Dispose();
+            Transaction?.Dispose();
         }
     }
 }

@@ -29,19 +29,16 @@ public WriteController(IFactoryCreator factoryConn)
 
 public async Task AddBooks([FromBody] string name)
 {
-  using (var transaction = await _factoryConn.CreateFactoryWithTransaction(IsolationLevel.Snapshot))
+  using (var factory = await _factoryConn.CreateFactoryWithTransaction(IsolationLevel.Snapshot))
   {
-    var dbFactoryWithConnection = transaction.FactoryFor<MyDbContext>();
-      using (var dbContext = dbFactoryWithConnection.GetReadWriteWithDbTransaction())
-      {
+    using var dbcontext = factory.FactoryFor<MyDbContext>().GetReadWriteWithDbTransaction();
           var book = new Book {
                           Name = name
                       };
 
           dbContext.Books.Add(book);
           await dbContext.SaveChanges();
-      }
-      transaction.commit();
+      factory.commitTransaction();
   }
 }
 ```
