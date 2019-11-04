@@ -2,16 +2,23 @@
 using System.Data;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
 
 namespace EFDbFactory.Sql
 {
     public class FactoryCreator : IFactoryCreator
     {
         private readonly string _connectionString;
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly bool _enableSensitiveDataLogging;
 
-        public FactoryCreator(string connectionString)
+        public FactoryCreator(string connectionString) => _connectionString = connectionString;
+
+        public FactoryCreator(string connectionString, ILoggerFactory loggerFactory, bool enableSensitiveDataLogging)
         {
             _connectionString = connectionString;
+            _loggerFactory = loggerFactory;
+            _enableSensitiveDataLogging = enableSensitiveDataLogging;
         }
 
         /// <summary>
@@ -28,7 +35,7 @@ namespace EFDbFactory.Sql
         /// <returns></returns>
         public async Task<IFactoryCreator> Create() => await CreateReadOnly();
 
-        public IDbFactory<T> FactoryFor<T>() where T : CommonDbContext => new DbFactory<T>(Connection, Transaction);
+        public IDbFactory<T> FactoryFor<T>() where T : CommonDbContext => _loggerFactory != null ? new DbFactory<T>(Connection, Transaction, _loggerFactory, _enableSensitiveDataLogging) : new DbFactory<T>(Connection, Transaction);
 
         public void CommitTransaction()
         {

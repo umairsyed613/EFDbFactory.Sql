@@ -27,6 +27,16 @@ Dependency Injection
 services.AddSingleton<IFactoryCreator, FactoryCreator>(provider => new FactoryCreator(connectionString));
 ```
 
+ServiceCollection Extension
+```
+Example 1 (No LoggerFactory)
+	services.AddEfDbFactory(Configuration.GetConnectionString("DbConnection"));
+
+Example 2 (With LoggerFactory)
+	services.AddEfDbFactory(Configuration.GetConnectionString("DbConnection"), MyLoggerFactory, true);
+
+```
+
 Injection in your controller
 ```
 private readonly IFactoryCreator _factoryConn;
