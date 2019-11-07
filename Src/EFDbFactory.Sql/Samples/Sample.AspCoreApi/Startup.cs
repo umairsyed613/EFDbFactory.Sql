@@ -20,8 +20,8 @@ namespace AspCoreApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IQuizService, QuizService>(provider => new QuizService(new FactoryCreator(Configuration.GetConnectionString("DbConnection1"))));
-            services.AddSingleton<IBookService, BookService>(provider => new BookService(new FactoryCreator(Configuration.GetConnectionString("DbConnection2"))));
+            services.AddSingleton<IQuizService, QuizService>(provider => new QuizService(new DbFactory(Configuration.GetConnectionString("DbConnection1"))));
+            services.AddSingleton<IBookService, BookService>(provider => new BookService(new DbFactory(Configuration.GetConnectionString("DbConnection2"))));
             services.AddControllers();
         }
 

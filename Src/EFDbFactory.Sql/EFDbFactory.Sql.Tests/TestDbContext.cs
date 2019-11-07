@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using EFDbFactory.Sql;
 
 namespace EFDbFactory.Sql.Tests
 {

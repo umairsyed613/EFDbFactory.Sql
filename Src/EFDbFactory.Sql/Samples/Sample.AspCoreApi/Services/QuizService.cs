@@ -9,16 +9,16 @@ namespace AspCoreApi.Services
 {
     public class QuizService : IQuizService
     {
-        private readonly IFactoryCreator _factoryCreator;
+        private readonly IDbFactory _dbFactory;
 
-        public QuizService(IFactoryCreator factoryCreator)
+        public QuizService(IDbFactory dbFactory)
         {
-            _factoryCreator = factoryCreator ?? throw new ArgumentNullException(nameof(factoryCreator));
+            _dbFactory = dbFactory ?? throw new ArgumentNullException(nameof(dbFactory));
         }
 
         public async Task CreateQuiz(string name)
         {
-            using var factory = await _factoryCreator.Create(IsolationLevel.ReadCommitted);
+            using var factory = await _dbFactory.Create(IsolationLevel.ReadCommitted);
             var context = factory.FactoryFor<QuizDbContext>().GetReadWriteWithDbTransaction();
             var q = new Quiz { Title = name };
             context.Quiz.Add(q);
@@ -34,7 +34,7 @@ namespace AspCoreApi.Services
 
         public async Task<IEnumerable<Quiz>> GetAllQuiz()
         {
-            using var factory = await _factoryCreator.Create();
+            using var factory = await _dbFactory.Create();
             var context = factory.FactoryFor<QuizDbContext>().GetReadOnlyWithNoTracking();
             return context.Quiz.ToList();
         }

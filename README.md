@@ -6,9 +6,6 @@
 Factory Pattern for Entity Framework Core. It helps for multiple EF DbContext with this pattern.
 You can create readonly context and read-write with transaction.
 
-# How to get it
-You can get it from NuGet - just install the [EFDbFactory.Sql](https://www.nuget.org/packages/EFDbFactory.Sql/)
-
 # How to use it
 
 Inherit your dbcontext with commondbcontext 
@@ -24,7 +21,7 @@ public partial class YourDbContext : CommonDbContext
 
 Dependency Injection
 ```
-services.AddSingleton<IFactoryCreator, FactoryCreator>(provider => new FactoryCreator(connectionString));
+services.AddSingleton<IDbFactory, DbFactory>(provider => new DbFactory(connectionString));
 ```
 
 ServiceCollection Extension
@@ -39,9 +36,9 @@ Example 2 (With LoggerFactory)
 
 Injection in your controller
 ```
-private readonly IFactoryCreator _factoryConn;
+private readonly IDbFactory _factoryConn;
 
-public WriteController(IFactoryCreator factoryConn)
+public WriteController(IDbFactory factoryConn)
 {
   _factoryConn = factoryConn ?? throw new ArgumentNullException(nameof(factoryConn));
 }
@@ -50,7 +47,7 @@ ReadWrite Factory
 ```
 public async Task CreateBook(int authorId, string title)
         {
-            using var factory = await _factoryCreator.Create(IsolationLevel.Snapshot);
+            using var factory = await factoryConn.Create(IsolationLevel.Snapshot);
             var context = factory.FactoryFor<BooksDbContext>().GetReadWriteWithDbTransaction();
 
             var book = new Book
@@ -67,14 +64,30 @@ Readonly factory
 ```
 public async Task<IEnumerable<Book>> GetAllBooks()
         {
-            using var factory = await _factoryCreator.Create();
+            using var factory = await factoryConn.Create();
             var context = factory.FactoryFor<BooksDbContext>().GetReadOnlyWithNoTracking();
             return context.Book.ToList();
         }
 ```
 
-# Build and Test
-Build Project and Run tests.
+# Testing
+
+```
+[Fact]
+public async Task Test_NoCommitFactory_AutoRollBack()
+{
+    using var fac = GetNoCommitFactory();
+    var context = fac.FactoryFor<TestDbContext>().GetReadWriteWithDbTransaction();
+
+    var quiz = new Quiz() { Title = "Test 1" };
+    context.Quiz.Add(quiz);
+    await context.SaveChangesAsync();
+
+    var q = Assert.Single(context.Quiz.ToList());
+    Assert.NotNull(q);
+    Assert.Equal("Test 1", q.Title);
+}
+```
 
 # Sample Projects
 ```

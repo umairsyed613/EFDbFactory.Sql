@@ -9,18 +9,18 @@ namespace AspCoreApi.Services
 {
     public class BookService : IBookService
     {
-        private readonly IFactoryCreator _factoryCreator;
+        private readonly IDbFactory _dbFactory;
 
-        public BookService(IFactoryCreator factoryCreator)
+        public BookService(IDbFactory dbFactory)
         {
-            _factoryCreator = factoryCreator ?? throw new ArgumentNullException(nameof(factoryCreator));
+            _dbFactory = dbFactory ?? throw new ArgumentNullException(nameof(dbFactory));
         }
 
         public async Task CreateAuthor(string name, string email) => throw new NotImplementedException();
 
         public async Task CreateBook(int authorId, string title)
         {
-            using var factory = await _factoryCreator.Create(IsolationLevel.Snapshot);
+            using var factory = await _dbFactory.Create(IsolationLevel.Snapshot);
             var context = factory.FactoryFor<BooksDbContext>().GetReadWriteWithDbTransaction();
 
             var book = new Book
@@ -35,7 +35,7 @@ namespace AspCoreApi.Services
 
         public async Task<IEnumerable<Book>> GetAllBooks()
         {
-            using var factory = await _factoryCreator.Create();
+            using var factory = await _dbFactory.Create();
             var context = factory.FactoryFor<BooksDbContext>().GetReadOnlyWithNoTracking();
             return context.Book.ToList();
         }

@@ -13,7 +13,7 @@ namespace EFDbFactory.Sql.Extensions
                 throw new ArgumentNullException(nameof(connectionString));
             }
 
-            services.AddSingleton<IFactoryCreator, FactoryCreator>(options => new FactoryCreator(connectionString));
+            services.AddSingleton<IDbFactory, DbFactory>(options => new DbFactory(connectionString));
 
             return services;
         }
@@ -30,7 +30,7 @@ namespace EFDbFactory.Sql.Extensions
                 throw new ArgumentNullException(nameof(loggerFactory));
             }
 
-            services.AddSingleton<IFactoryCreator, FactoryCreator>(options => new FactoryCreator(connectionString, loggerFactory, enableSensitiveDataLogging));
+            services.AddSingleton<IDbFactory, DbFactory>(options => new DbFactory(connectionString, loggerFactory, enableSensitiveDataLogging));
 
             return services;
         }

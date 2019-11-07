@@ -1,17 +1,51 @@
-﻿namespace EFDbFactory.Sql
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
+
+namespace EFDbFactory.Sql
 {
-    public interface IDbFactory<out T> where T : CommonDbContext
+    public interface IDbFactory : IDisposable
     {
         /// <summary>
-        /// return readwrite context
+        /// Create a Connection with Transaction level
         /// </summary>
+        /// <param name="isolationLevel"></param>
         /// <returns></returns>
-        T GetReadWriteWithDbTransaction();
+        Task<IDbFactory> Create(System.Data.IsolationLevel isolationLevel);
 
         /// <summary>
-        /// return readonly context with no tracking of your EF entity object
+        /// Create a factory with no transaction
         /// </summary>
         /// <returns></returns>
-        T GetReadOnlyWithNoTracking();
+        Task<IDbFactory> Create();
+
+        /// <summary>
+        /// Create a factory with no commit. use for testing
+        /// </summary>
+        /// <returns></returns>
+        Task<IDbFactory> CreateNoCommit();
+
+        /// <summary>
+        /// Get Database factory for your context
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        IContextCreator<T> FactoryFor<T>() where T : CommonDbContext;
+
+        /// <summary>
+        /// commit transaction when you have done your work. if there is an error in your code the transaction will not be committed. throw InvalidOperationException if the factory is created with no transaction.
+        /// </summary>
+        /// <exception cref="InvalidOperationException"></exception>
+        void CommitTransaction();
+
+        /// <summary>
+        /// return a sql connection when factory is being created.
+        /// </summary>
+        SqlConnection Connection { get; }
+
+        /// <summary>
+        /// return sql transaction which is being initialized with factory creation
+        /// </summary>
+        SqlTransaction Transaction { get; }
     }
 }
