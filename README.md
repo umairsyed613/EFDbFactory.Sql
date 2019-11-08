@@ -1,8 +1,9 @@
 # Entity Framework Core Factory Pattern for Sql Server
 
 [![NuGet version](https://badge.fury.io/nu/EFDbFactory.Sql.svg)](https://badge.fury.io/nu/EFDbFactory.Sql)
-
 [![Build Status](https://travis-ci.org/umairsyed613/EFDbFactory.Sql.svg?branch=master)](https://travis-ci.org/umairsyed613/EFDbFactory.Sql)
+[![Nuget downloads (EFDbFactory.Sql)](https://img.shields.io/nuget/dt/EFDbFactory.Sql)](https://nuget.org/packages/EFDbFactory.Sql)
+
 
 # Introduction 
 Factory Pattern for Entity Framework Core. It helps for multiple EF DbContext with this pattern.
