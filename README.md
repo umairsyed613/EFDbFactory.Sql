@@ -2,6 +2,8 @@
 
 [![NuGet version](https://badge.fury.io/nu/EFDbFactory.Sql.svg)](https://badge.fury.io/nu/EFDbFactory.Sql)
 
+[![Build Status](https://travis-ci.org/umairsyed613/EFDbFactory.Sql.svg?branch=master)](https://travis-ci.org/umairsyed613/EFDbFactory.Sql)
+
 # Introduction 
 Factory Pattern for Entity Framework Core. It helps for multiple EF DbContext with this pattern.
 You can create readonly context and read-write with transaction.
