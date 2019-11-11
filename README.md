@@ -76,7 +76,8 @@ public async Task<IEnumerable<Book>> GetAllBooks()
 # Testing
 
 ```
-private static IDbFactory GetNoCommitFactory() => new DbFactory("YourConnectionString").CreateNoCommit().GetAwaiter().GetResult();
+private static IDbFactory GetNoCommitFactory() => new DbFactory("YourConnectionString").CreateNoCommit()
+							.GetAwaiter().GetResult();
 
 [Fact]
 public async Task Test_NoCommitFactory_AutoRollBack()
