@@ -19,7 +19,7 @@ namespace Sample.AspCoreApiWithLogger.Services
         public async Task CreateQuiz(string name)
         {
             using var factory = await _dbFactory.Create(IsolationLevel.ReadCommitted);
-            var context = factory.FactoryFor<QuizDbContext>().GetReadWriteWithDbTransaction();
+            var context = factory.FactoryFor<QuizDbContext>();
             var q = new Quiz { Title = name };
             context.Quiz.Add(q);
             await context.SaveChangesAsync();
@@ -35,7 +35,7 @@ namespace Sample.AspCoreApiWithLogger.Services
         public async Task<IEnumerable<Quiz>> GetAllQuiz()
         {
             using var factory = await _dbFactory.Create();
-            var context = factory.FactoryFor<QuizDbContext>().GetReadOnlyWithNoTracking();
+            var context = factory.FactoryFor<QuizDbContext>();
             return context.Quiz.ToList();
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Threading.Tasks;
+
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 
@@ -12,8 +13,10 @@ namespace EFDbFactory.Sql
         private readonly ILoggerFactory _loggerFactory;
         private readonly bool _enableSensitiveDataLogging;
         private static bool _noCommitFactory;
+        private static bool _readOnly;
 
         public SqlConnection Connection { get; private set; }
+
         public SqlTransaction Transaction { get; private set; }
 
         public DbFactory(string connectionString) => _connectionString = connectionString;
@@ -31,8 +34,7 @@ namespace EFDbFactory.Sql
         /// <param name="isolationLevel"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async Task<IDbFactory> Create(IsolationLevel isolationLevel) =>
-            await CreateReadWriteWithTransactionLevel(isolationLevel);
+        public async Task<IDbFactory> Create(IsolationLevel isolationLevel) => await CreateReadWriteWithTransactionLevel(isolationLevel);
 
         /// <summary>
         /// create factory with no transaction
@@ -47,13 +49,17 @@ namespace EFDbFactory.Sql
         public async Task<IDbFactory> CreateNoCommit()
         {
             _noCommitFactory = true;
+
             return await CreateReadWriteWithTransactionLevel(IsolationLevel.Unspecified);
         }
 
-        public IContextCreator<T> FactoryFor<T>() where T : CommonDbContext =>
-            _loggerFactory != null
-                ? new ContextCreator<T>(Connection, Transaction, _loggerFactory, _enableSensitiveDataLogging)
-                : new ContextCreator<T>(Connection, Transaction);
+        public T FactoryFor<T>()
+        where T : CommonDbContext =>
+            _loggerFactory != null ?
+                (_readOnly ? new ContextCreator<T>(Connection, Transaction, _loggerFactory, _enableSensitiveDataLogging).GetReadOnlyWithNoTracking() :
+                     new ContextCreator<T>(Connection, Transaction, _loggerFactory, _enableSensitiveDataLogging).GetReadWriteWithDbTransaction()) :
+                (_readOnly ? new ContextCreator<T>(Connection, Transaction).GetReadOnlyWithNoTracking() :
+                     new ContextCreator<T>(Connection, Transaction).GetReadWriteWithDbTransaction());
 
         /// <summary>
         /// Commit the transaction. throw exception when transaction is null. will not commit the transaction if the factory is created CreateNoCommit
@@ -61,15 +67,9 @@ namespace EFDbFactory.Sql
         /// <exception cref="InvalidOperationException"></exception>
         public void CommitTransaction()
         {
-            if (_noCommitFactory)
-            {
-                throw new InvalidOperationException("Cannot commit no commit factory.");
-            }
+            if (_noCommitFactory) { throw new InvalidOperationException("Cannot commit no commit factory."); }
 
-            if (Transaction == null)
-            {
-                throw new InvalidOperationException("Cannot commit null transaction");
-            }
+            if (Transaction == null) { throw new InvalidOperationException("Cannot commit null transaction"); }
 
             Transaction.Commit();
         }
@@ -79,6 +79,7 @@ namespace EFDbFactory.Sql
             Connection = new SqlConnection(_connectionString);
             await Connection.OpenAsync();
             Transaction = Connection.BeginTransaction(isolationLevel);
+            _readOnly = false;
             return this;
         }
 
@@ -87,15 +88,14 @@ namespace EFDbFactory.Sql
             Connection = new SqlConnection(_connectionString);
             await Connection.OpenAsync();
             Transaction = null;
+            _readOnly = true;
+
             return this;
         }
 
         public void Dispose()
         {
-            if (_noCommitFactory)
-            {
-                Transaction?.Rollback();
-            }
+            if (_noCommitFactory) { Transaction?.Rollback(); }
 
             Connection?.Dispose();
             Transaction?.Dispose();
