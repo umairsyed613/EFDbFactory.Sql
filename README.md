@@ -1,6 +1,9 @@
 # Entity Framework Core Factory Pattern for Sql Server
 
 [![NuGet version](https://badge.fury.io/nu/EFDbFactory.Sql.svg)](https://badge.fury.io/nu/EFDbFactory.Sql)
+[![Build Status](https://travis-ci.org/umairsyed613/EFDbFactory.Sql.svg?branch=master)](https://travis-ci.org/umairsyed613/EFDbFactory.Sql)
+[![Nuget downloads (EFDbFactory.Sql)](https://img.shields.io/nuget/dt/EFDbFactory.Sql)](https://nuget.org/packages/EFDbFactory.Sql)
+
 
 # Introduction 
 Factory Pattern for Entity Framework Core. It helps for multiple EF DbContext with this pattern.
@@ -9,7 +12,7 @@ You can create readonly context and read-write with transaction.
 # How to use it
 
 Inherit your dbcontext with commondbcontext 
-```
+```csharp
 public partial class YourDbContext : CommonDbContext
     {
         public YourDbContext(DbContextOptions<QuizDbContext> options)
@@ -20,12 +23,12 @@ public partial class YourDbContext : CommonDbContext
 ```
 
 Dependency Injection
-```
+```csharp
 services.AddSingleton<IDbFactory, DbFactory>(provider => new DbFactory(connectionString));
 ```
 
 ServiceCollection Extension
-```
+```csharp
 Example 1 (No LoggerFactory)
 	services.AddEfDbFactory(Configuration.GetConnectionString("DbConnection"));
 
@@ -44,7 +47,7 @@ public WriteController(IDbFactory factoryConn)
 }
 ```
 ReadWrite Factory
-```
+```csharp
 public async Task CreateBook(int authorId, string title)
         {
             using var factory = await factoryConn.Create(IsolationLevel.Snapshot);
@@ -61,7 +64,7 @@ public async Task CreateBook(int authorId, string title)
         }
 ```
 Readonly factory 
-```
+```csharp
 public async Task<IEnumerable<Book>> GetAllBooks()
         {
             using var factory = await factoryConn.Create();
@@ -72,8 +75,9 @@ public async Task<IEnumerable<Book>> GetAllBooks()
 
 # Testing
 
-```
-private static IDbFactory GetNoCommitFactory() => new DbFactory("YourConnectionString").CreateNoCommit().GetAwaiter().GetResult();
+```csharp
+private static IDbFactory GetNoCommitFactory() => new DbFactory("YourConnectionString").CreateNoCommit()
+							.GetAwaiter().GetResult();
 
 [Fact]
 public async Task Test_NoCommitFactory_AutoRollBack()
