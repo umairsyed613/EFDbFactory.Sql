@@ -51,7 +51,7 @@ ReadWrite Factory
 public async Task CreateBook(int authorId, string title)
         {
             using var factory = await factoryConn.Create(IsolationLevel.Snapshot);
-            var context = factory.FactoryFor<BooksDbContext>().GetReadWriteWithDbTransaction();
+            var context = factory.FactoryFor<BooksDbContext>();
 
             var book = new Book
             {
@@ -68,7 +68,7 @@ Readonly factory
 public async Task<IEnumerable<Book>> GetAllBooks()
         {
             using var factory = await factoryConn.Create();
-            var context = factory.FactoryFor<BooksDbContext>().GetReadOnlyWithNoTracking();
+            var context = factory.FactoryFor<BooksDbContext>();
             return context.Book.ToList();
         }
 ```
@@ -84,7 +84,7 @@ public async Task Test_NoCommitFactory_AutoRollBack()
 {
     using (var fac = GetNoCommitFactory())
     {
-        var context = fac.FactoryFor<TestDbContext>().GetReadWriteWithDbTransaction();
+        var context = fac.FactoryFor<TestDbContext>();
 
         var quiz = new Quiz() {Title = "Test 1"};
         context.Quiz.Add(quiz);
@@ -97,7 +97,7 @@ public async Task Test_NoCommitFactory_AutoRollBack()
 
     using (var fac2 = GetNoCommitFactory())
     {
-        var context = fac2.FactoryFor<TestDbContext>().GetReadWriteWithDbTransaction();
+        var context = fac2.FactoryFor<TestDbContext>();
         Assert.Empty(context.Quiz.ToList());
     }
 }

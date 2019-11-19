@@ -17,7 +17,7 @@ namespace EFDbFactory.Sql.Tests
         public async Task Test_NoCommitFactory_ThrowsExceptionWhenCommitingTransaction()
         {
             using var fac = GetNoCommitFactory();
-            var context = fac.FactoryFor<TestDbContext>().GetReadWriteWithDbTransaction();
+            var context = fac.FactoryFor<TestDbContext>();
 
             var quiz = new Quiz() {Title = "Test 1"};
             context.Quiz.Add(quiz);
@@ -35,7 +35,7 @@ namespace EFDbFactory.Sql.Tests
         {
             using (var fac = GetNoCommitFactory())
             {
-                var context = fac.FactoryFor<TestDbContext>().GetReadWriteWithDbTransaction();
+                var context = fac.FactoryFor<TestDbContext>();
 
                 var quiz = new Quiz() {Title = "Test 1"};
                 context.Quiz.Add(quiz);
@@ -48,7 +48,7 @@ namespace EFDbFactory.Sql.Tests
 
             using (var fac2 = GetNoCommitFactory())
             {
-                var context = fac2.FactoryFor<TestDbContext>().GetReadWriteWithDbTransaction();
+                var context = fac2.FactoryFor<TestDbContext>();
                 Assert.Empty(context.Quiz.ToList());
             }
         }

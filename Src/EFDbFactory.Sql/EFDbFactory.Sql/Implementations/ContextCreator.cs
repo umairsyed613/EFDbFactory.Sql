@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EFDbFactory.Sql
 {
-    public class ContextCreator<T> : IContextCreator<T> where T : CommonDbContext
+    internal sealed class ContextCreator<T> where T : CommonDbContext
     {
         private readonly string _connectionString;
         private readonly DbConnection _outerConnection;

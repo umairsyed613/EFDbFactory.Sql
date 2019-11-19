@@ -21,7 +21,7 @@ namespace AspCoreApi.Services
         public async Task CreateBook(int authorId, string title)
         {
             using var factory = await _dbFactory.Create(IsolationLevel.Snapshot);
-            var context = factory.FactoryFor<BooksDbContext>().GetReadWriteWithDbTransaction();
+            var context = factory.FactoryFor<BooksDbContext>();
 
             var book = new Book
             {
@@ -36,7 +36,7 @@ namespace AspCoreApi.Services
         public async Task<IEnumerable<Book>> GetAllBooks()
         {
             using var factory = await _dbFactory.Create();
-            var context = factory.FactoryFor<BooksDbContext>().GetReadOnlyWithNoTracking();
+            var context = factory.FactoryFor<BooksDbContext>();
             return context.Book.ToList();
         }
     }
