@@ -30,7 +30,7 @@ namespace EFDbFactory.Sql
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        T FactoryFor<T>() where T : CommonDbContext;
+        T For<T>() where T : EFDbContext;
 
         /// <summary>
         /// commit transaction when you have done your work. if there is an error in your code the transaction will not be committed. throw InvalidOperationException if the factory is created with no transaction.

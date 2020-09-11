@@ -1,4 +1,6 @@
 using EFDbFactory.Sql.Extensions;
+using EFDbFactory.Sql.Options;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +32,13 @@ namespace Sample.AspCoreApiWithLogger
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddEfDbFactory(Configuration.GetConnectionString("DbConnection"), MyLoggerFactory, true);
+            services.AddEfDbFactory(new EfDbFactoryOptions
+                                        {
+                                            ConnectionString = Configuration.GetConnectionString("DbConnection"),
+                                            LoggerFactory =  MyLoggerFactory,
+                                            EnableSensitiveDataLogging = true
+                                        });
+
             services.AddSingleton<IQuizService, QuizService>();
             services.AddControllers();
         }

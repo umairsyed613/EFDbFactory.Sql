@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AspCoreApi
 {
-    public partial class BooksDbContext : CommonDbContext
+    public partial class BooksDbContext : EFDbContext
     {
         public BooksDbContext(DbContextOptions<BooksDbContext> options)
             : base(options)

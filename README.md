@@ -10,10 +10,9 @@ Factory Pattern for Entity Framework Core. It helps for multiple EF DbContext wi
 You can create readonly context and read-write with transaction.
 
 # How to use it
-
-Inherit your dbcontext with commondbcontext 
+### Important Inherit your dbcontext with EFDbContext 
 ```csharp
-public partial class YourDbContext : CommonDbContext
+public partial class YourDbContext : EFDbContext
     {
         public YourDbContext(DbContextOptions<QuizDbContext> options)
             : base(options)
@@ -30,11 +29,18 @@ services.AddSingleton<IDbFactory, DbFactory>(provider => new DbFactory(connectio
 ServiceCollection Extension
 ```csharp
 Example 1 (No LoggerFactory)
-	services.AddEfDbFactory(Configuration.GetConnectionString("DbConnection"));
+	services.AddEfDbFactory(connectionString: Configuration.GetConnectionString("DbConnection"));
 
 Example 2 (With LoggerFactory)
-	services.AddEfDbFactory(Configuration.GetConnectionString("DbConnection"), MyLoggerFactory, true);
+	services.AddEfDbFactory(connectionString: Configuration.GetConnectionString("DbConnection"), loggerFactory: MyLoggerFactory, enableSensitiveDataLogging: true);
 
+Example 3 (With Options)
+            services.AddEfDbFactory(new EfDbFactoryOptions
+                                        {
+                                            ConnectionString = Configuration.GetConnectionString("DbConnection"),
+                                            LoggerFactory =  MyLoggerFactory,
+                                            EnableSensitiveDataLogging = true
+                                        });
 ```
 
 Injection in your controller
@@ -51,7 +57,7 @@ ReadWrite Factory
 public async Task CreateBook(int authorId, string title)
         {
             using var factory = await factoryConn.Create(IsolationLevel.Snapshot);
-            var context = factory.FactoryFor<BooksDbContext>();
+            var context = factory.For<BooksDbContext>();
 
             var book = new Book
             {
@@ -68,7 +74,7 @@ Readonly factory
 public async Task<IEnumerable<Book>> GetAllBooks()
         {
             using var factory = await factoryConn.Create();
-            var context = factory.FactoryFor<BooksDbContext>();
+            var context = factory.For<BooksDbContext>();
             return context.Book.ToList();
         }
 ```
@@ -76,15 +82,17 @@ public async Task<IEnumerable<Book>> GetAllBooks()
 # Testing
 
 ```csharp
-private static IDbFactory GetNoCommitFactory() => new DbFactory("YourConnectionString").CreateNoCommit()
-							.GetAwaiter().GetResult();
+private const string _connString =
+            "Server=localhost\\sqlexpress;Database=QuizDb;Integrated Security=True;Trusted_Connection=True;MultipleActiveResultSets=True;ConnectRetryCount=0";
+
+private static async Task<IDbFactory> GetNoCommitFactoryAsync() => await new DbFactory(_connString).CreateNoCommit();
 
 [Fact]
 public async Task Test_NoCommitFactory_AutoRollBack()
 {
-    using (var fac = GetNoCommitFactory())
+    using (var fac = await GetNoCommitFactory())
     {
-        var context = fac.FactoryFor<TestDbContext>();
+        var context = fac.For<TestDbContext>();
 
         var quiz = new Quiz() {Title = "Test 1"};
         context.Quiz.Add(quiz);
@@ -95,9 +103,9 @@ public async Task Test_NoCommitFactory_AutoRollBack()
         Assert.Equal("Test 1", q.Title);
     }
 
-    using (var fac2 = GetNoCommitFactory())
+    using (var fac2 = await GetNoCommitFactory())
     {
-        var context = fac2.FactoryFor<TestDbContext>();
+        var context = fac2.For<TestDbContext>();
         Assert.Empty(context.Quiz.ToList());
     }
 }
@@ -108,5 +116,3 @@ public async Task Test_NoCommitFactory_AutoRollBack()
 ```
 You can find sample projects under Src/Samples
 ```
-
-# Feel Free to make it better

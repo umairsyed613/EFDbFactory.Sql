@@ -13,7 +13,7 @@ namespace Sample.ConsoleAppCore
         static void Main(string[] args)
         {
             using var factory = new DbFactory(_connectionString).Create().GetAwaiter().GetResult();
-            var context = factory.FactoryFor<QuizDbContext>();
+            var context = factory.For<QuizDbContext>();
             Console.WriteLine("All Availible Quiz's");
             ShowAllQuiz(context);
 
@@ -25,7 +25,7 @@ namespace Sample.ConsoleAppCore
             if (!string.IsNullOrWhiteSpace(quizName))
             {
                 using var factory2 = new DbFactory(_connectionString).Create(IsolationLevel.ReadCommitted).GetAwaiter().GetResult();
-                var writableContext = factory2.FactoryFor<QuizDbContext>();
+                var writableContext = factory2.For<QuizDbContext>();
 
                 var quiz = new Quiz { Title = quizName };
                 writableContext.Quiz.Add(quiz);

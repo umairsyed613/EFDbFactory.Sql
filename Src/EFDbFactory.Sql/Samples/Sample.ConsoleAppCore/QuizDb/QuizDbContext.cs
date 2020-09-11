@@ -3,7 +3,7 @@ using EFDbFactory.Sql;
 
 namespace Sample.ConsoleAppCore
 {
-    public partial class QuizDbContext : CommonDbContext
+    public partial class QuizDbContext : EFDbContext
     {
         public QuizDbContext(DbContextOptions<QuizDbContext> options)
             : base(options)
