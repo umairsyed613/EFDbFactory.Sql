@@ -2,6 +2,8 @@
 using System.Data;
 using System.Threading.Tasks;
 
+using EFDbFactory.Sql.Options;
+
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 
@@ -23,9 +25,26 @@ namespace EFDbFactory.Sql
 
         public DbFactory(string connectionString, ILoggerFactory loggerFactory, bool enableSensitiveDataLogging)
         {
-            _connectionString = connectionString;
+            _connectionString = connectionString ?? throw new ArgumentNullException("ConnectionString cannot be empty!");
             _loggerFactory = loggerFactory;
             _enableSensitiveDataLogging = enableSensitiveDataLogging;
+        }
+
+        public DbFactory(EfDbFactoryOptions options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            if (string.IsNullOrWhiteSpace(options.ConnectionString))
+            {
+                throw new ArgumentNullException("ConnectionString cannot be empty!");
+            }
+
+            _connectionString = options.ConnectionString;
+            _loggerFactory = options.LoggerFactory ?? null;
+            _enableSensitiveDataLogging = options.EnableSensitiveDataLogging;
         }
 
         /// <summary>
@@ -53,13 +72,13 @@ namespace EFDbFactory.Sql
             return await CreateReadWriteWithTransactionLevel(IsolationLevel.Unspecified);
         }
 
-        public T FactoryFor<T>()
-        where T : CommonDbContext =>
-            _loggerFactory != null ?
-                (_readOnly ? new ContextCreator<T>(Connection, Transaction, _loggerFactory, _enableSensitiveDataLogging).GetReadOnlyWithNoTracking() :
-                     new ContextCreator<T>(Connection, Transaction, _loggerFactory, _enableSensitiveDataLogging).GetReadWriteWithDbTransaction()) :
-                (_readOnly ? new ContextCreator<T>(Connection, Transaction).GetReadOnlyWithNoTracking() :
-                     new ContextCreator<T>(Connection, Transaction).GetReadWriteWithDbTransaction());
+        public T For<T>()
+        where T : EFDbContext
+            => _loggerFactory != null ?
+                   (_readOnly ? new ContextCreator<T>(Connection, Transaction, _loggerFactory, _enableSensitiveDataLogging).GetReadOnlyWithNoTracking() :
+                        new ContextCreator<T>(Connection, Transaction, _loggerFactory, _enableSensitiveDataLogging).GetReadWriteWithDbTransaction()) :
+                   (_readOnly ? new ContextCreator<T>(Connection, Transaction).GetReadOnlyWithNoTracking() :
+                        new ContextCreator<T>(Connection, Transaction).GetReadWriteWithDbTransaction());
 
         /// <summary>
         /// Commit the transaction. throw exception when transaction is null. will not commit the transaction if the factory is created CreateNoCommit
@@ -80,6 +99,7 @@ namespace EFDbFactory.Sql
             await Connection.OpenAsync();
             Transaction = Connection.BeginTransaction(isolationLevel);
             _readOnly = false;
+
             return this;
         }
 

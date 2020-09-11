@@ -2,7 +2,7 @@
 
 namespace EFDbFactory.Sql.Tests
 {
-    public partial class TestDbContext : CommonDbContext
+    public partial class TestDbContext : EFDbContext
     {
         public TestDbContext(DbContextOptions<TestDbContext> options)
             : base(options)

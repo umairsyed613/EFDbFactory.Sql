@@ -10,14 +10,13 @@ namespace EFDbFactory.Sql.Tests
         private const string _connString =
             "Server=localhost\\sqlexpress;Database=QuizDb;Integrated Security=True;Trusted_Connection=True;MultipleActiveResultSets=True;ConnectRetryCount=0";
 
-        private static IDbFactory GetNoCommitFactory() =>
-            new DbFactory(_connString).CreateNoCommit().GetAwaiter().GetResult();
+        private static async Task<IDbFactory> GetNoCommitFactoryAsync() => await new DbFactory(_connString).CreateNoCommit();
 
         [Fact]
         public async Task Test_NoCommitFactory_ThrowsExceptionWhenCommitingTransaction()
         {
-            using var fac = GetNoCommitFactory();
-            var context = fac.FactoryFor<TestDbContext>();
+            using var fac = await GetNoCommitFactoryAsync();
+            var context = fac.For<TestDbContext>();
 
             var quiz = new Quiz() {Title = "Test 1"};
             context.Quiz.Add(quiz);
@@ -33,9 +32,9 @@ namespace EFDbFactory.Sql.Tests
         [Fact]
         public async Task Test_NoCommitFactory_AutoRollBack()
         {
-            using (var fac = GetNoCommitFactory())
+            using (var fac = await GetNoCommitFactoryAsync())
             {
-                var context = fac.FactoryFor<TestDbContext>();
+                var context = fac.For<TestDbContext>();
 
                 var quiz = new Quiz() {Title = "Test 1"};
                 context.Quiz.Add(quiz);
@@ -46,9 +45,9 @@ namespace EFDbFactory.Sql.Tests
                 Assert.Equal("Test 1", q.Title);
             }
 
-            using (var fac2 = GetNoCommitFactory())
+            using (var fac2 = await GetNoCommitFactoryAsync())
             {
-                var context = fac2.FactoryFor<TestDbContext>();
+                var context = fac2.For<TestDbContext>();
                 Assert.Empty(context.Quiz.ToList());
             }
         }
