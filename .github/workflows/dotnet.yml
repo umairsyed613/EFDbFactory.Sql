@@ -18,6 +18,4 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore Src/EFDbFactory.Sql/EFDbFactory.Sql.sln
     - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet build Src/EFDbFactory.Sql/EFDbFactory.Sql.sln --no-restore
